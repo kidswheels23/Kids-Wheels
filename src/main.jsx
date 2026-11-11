@@ -12,8 +12,11 @@ const busRoad='https://images.unsplash.com/photo-1754647766402-4634cf235aad?auto
 function App(){
  const[menu,setMenu]=useState(false),[faq,setFaq]=useState(0),[progress,setProgress]=useState(0),[dark,setDark]=useState(true),[scrollY,setScrollY]=useState(0);
  useEffect(()=>{
-  const f=()=>{const max=document.documentElement.scrollHeight-innerHeight;setProgress(max>0?scrollY/max:0);setScrollY(window.scrollY)};
-  addEventListener('scroll',f,{passive:true});f();return()=>removeEventListener('scroll',f);
+  const f=()=>{const max=document.documentElement.scrollHeight-innerHeight;setProgress(max>0?window.scrollY/max:0);setScrollY(window.scrollY)};
+  addEventListener('scroll',f,{passive:true});f();
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(node=>observer.observe(node));
+  return()=>{removeEventListener('scroll',f);observer.disconnect()};
  },[]);
  const qs=[['¿Qué zonas cubre el transporte escolar?','Contáctanos por WhatsApp para consultar las rutas y zonas disponibles.'],['¿Cómo puedo conocer las tarifas?','Escríbenos para recibir información sobre las tarifas y opciones de servicio disponibles.'],['¿Cómo puedo solicitar el servicio?','Comunícate con nuestro equipo para consultar disponibilidad y coordinar los detalles del transporte escolar.'],['¿Cómo puedo obtener más información?','Síguenos en Instagram o escríbenos por WhatsApp. Con gusto te orientamos.']];
  return <div className={'site-shell '+(dark?'theme-dark':'theme-light')}>
